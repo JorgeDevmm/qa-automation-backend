@@ -1,13 +1,20 @@
 Feature: Registrar nuevo usuario en ServeRest
+  # Este feature prueba el endpoint POST /usuarios
+  # Valida la creación de usuarios con datos válidos e inválidos
 
   Background:
+    # Configuración base para todos los escenarios
     * url baseUrl
     * path '/usuarios'
+    # Función para generar timestamp único
     * def timestamp = function(){ return java.lang.System.currentTimeMillis() }
+    # Email único para cada ejecución
     * def randomEmail = 'usuario' + timestamp() + '@qa.com'
 
   @smoke @critical
   Scenario: Registrar usuario válido exitosamente
+    # Verifica que se puede crear un usuario con todos los datos correctos
+    # Debe retornar status 201 y un ID de usuario
     Given request
      """
       {
@@ -25,6 +32,8 @@ Feature: Registrar nuevo usuario en ServeRest
 
   @negative
   Scenario: Fallar al registrar usuario con email duplicado
+    # Verifica que el sistema no permite emails duplicados
+    # Debe retornar status 400 con mensaje específico
     * def emailDuplicado = 'fulano@qa.com'
     Given request
       """
@@ -41,6 +50,8 @@ Feature: Registrar nuevo usuario en ServeRest
 
   @negative
   Scenario Outline: Validar campos obligatorios
+    # Verifica que todos los campos requeridos son validados
+    # Debe retornar status 400 cuando faltan campos obligatorios
     Given request
       """
       {

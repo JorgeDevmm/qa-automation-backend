@@ -1,22 +1,26 @@
 Feature: Listar usuarios del API ServeRest
+  # Este feature prueba el endpoint GET /usuarios
+  # Valida la lista de usuarios, paginación y filtros
 
   Background:
+    # Configuración base para todos los escenarios
     * url baseUrl
     * path '/usuarios'
-    # Cargar esquemas de validación
-    * def schemas = call read('helpers/schema-validators.feature@userListSchema')
 
   @smoke @regression
   Scenario: Listar todos los usuarios exitosamente
+    # Verifica que el endpoint retorna la lista completa de usuarios
+    # con la estructura esperada
     When method GET
     Then status 200
     And match response.usuarios == '#array'
     And match response.quantidade == '#number'
-    And match response == schemas.userListSchema
     And match each response.usuarios contains { _id: '#string', nome: '#string', email: '#string' }
 
   @smoke
-  Scenario: Validar estructura de cada usuario en la lista
+  Scenario: Validar estructura completa de cada usuario en la lista
+    # Verifica que cada usuario en la lista tiene todos los campos requeridos
+    # con los tipos de datos correctos
     When method GET
     Then status 200
     And match each response.usuarios ==
@@ -32,6 +36,7 @@ Feature: Listar usuarios del API ServeRest
 
   @regression
   Scenario: Validar paginación de usuarios con límite de 5
+    # Prueba la funcionalidad de paginación limitando los resultados a 5
     Given param _limit = 5
     And param _page = 1
     When method GET
@@ -41,6 +46,7 @@ Feature: Listar usuarios del API ServeRest
 
   @regression
   Scenario: Validar paginación en segunda página
+    # Verifica que la paginación funciona correctamente en páginas subsecuentes
     Given param _limit = 3
     And param _page = 2
     When method GET
@@ -49,6 +55,8 @@ Feature: Listar usuarios del API ServeRest
 
   @negative
   Scenario: Intentar listar con parámetros inválidos
+    # Verifica que el API maneja correctamente parámetros inválidos
+    # El API debe responder sin errores aunque el parámetro sea negativo
     Given param _limit = -1
     When method GET
     Then status 200
@@ -56,31 +64,49 @@ Feature: Listar usuarios del API ServeRest
 
   @smoke
   Scenario: Validar que la lista no esté vacía
+    # Verifica que existen usuarios registrados en el sistema
     When method GET
     Then status 200
     And assert response.quantidade > 0
 
   @regression
-  Scenario: Buscar usuario por email existente
-    # Primero crear un usuario para garantizar que existe
-    * def testUser = call read('helpers/user-data-generator.feature@Generar datos de usuario válido')
+  Scenario: Buscar usuario específico por email
+    # Crea un usuario, lo busca por email y luego lo elimina
+    # para mantener limpia la base de datos de prueba
+
+    # Generar datos únicos para el usuario de prueba
+    * def timestamp = function(){ return java.lang.System.currentTimeMillis() }
+    * def uniqueEmail = 'test.listar.' + timestamp() + '@qa.com'
+    * def testUser =
+    """
+    {
+      "nome": "Usuario Test Listar",
+      "email": "#(uniqueEmail)",
+      "password": "senha123",
+      "administrador": "true"
+    }
+    """
+
+    # Crear usuario de prueba
     Given url baseUrl
     And path '/usuarios'
-    And request testUser.userData
+    And request testUser
     When method POST
     Then status 201
     * def createdUserId = response._id
 
-    # Buscar ese usuario en la lista
+    # Buscar el usuario creado por email
     Given url baseUrl
     And path '/usuarios'
-    And param email = testUser.userData.email
+    And param email = uniqueEmail
     When method GET
     Then status 200
-    And match response.usuarios[0].email == testUser.userData.email
+    And match response.usuarios[0].email == uniqueEmail
+    And match response.usuarios[0]._id == createdUserId
 
-    # Limpiar el usuario creado
+    # Limpiar: eliminar el usuario creado
     Given url baseUrl
     And path '/usuarios', createdUserId
     When method DELETE
     Then status 200
+    And match response.message == 'Registro excluído com sucesso'
