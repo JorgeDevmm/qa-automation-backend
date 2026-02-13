@@ -142,8 +142,8 @@ And match response == {...}
 
 | Tipo      | Cantidad | %     | Justificación                  |
 |-----------|----------|-------|--------------------------------|
-| Positivos | 20       | 62.5% | Validar funcionalidad correcta |
-| Negativos | 12       | 37.5% | Validar manejo de errores      |
+| Positivos | 21       | 63.6% | Validar funcionalidad correcta |
+| Negativos | 12       | 36.4% | Validar manejo de errores      |
 
 **Ratio óptimo:** 60-40, priorizando casos positivos sin descuidar validaciones de error.
 
@@ -151,12 +151,12 @@ And match response == {...}
 
 | Operación   | Endpoint              | Casos + | Casos - | Total  |
 |-------------|-----------------------|---------|---------|--------|
-| Create      | POST /usuarios        | 3       | 3       | 6      |
+| Create      | POST /usuarios        | 4       | 3       | 7      |
 | Read (List) | GET /usuarios         | 6       | 2       | 8      |
 | Read (ID)   | GET /usuarios/{id}    | 3       | 2       | 5      |
 | Update      | PUT /usuarios/{id}    | 4       | 3       | 7      |
 | Delete      | DELETE /usuarios/{id} | 4       | 2       | 6      |
-| **TOTAL**   | -                     | **20**  | **12**  | **32** |
+| **TOTAL**   | -                     | **21**  | **12**  | **33** |
 
 ---
 
@@ -453,4 +453,3 @@ Esta estrategia de automatización logra:
 - [BDD Best Practices](https://cucumber.io/docs/bdd/)
 
 ---
-

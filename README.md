@@ -209,7 +209,7 @@ Aquí te explico qué hay en cada carpeta:
 qa-automation-backend/
 ├── 📄 pom.xml                          # Configuración de Maven (dependencias)
 ├── 📖 README.md                        # Este archivo que estás leyendo
-├── 📊 VERIFICACION_CUMPLIMIENTO.md    # Análisis completo del proyecto
+├── 📋 ESTRATEGIA_AUTOMATIZACION.md    # Estrategia y patrones utilizados
 │
 └── src/test/java/
     ├── ⚙️ karate-config.js            # Configuración global (URL base, etc.)
@@ -254,11 +254,12 @@ Prueba que puedas crear nuevos usuarios. Verifica:
 
 - ✅ Que se cree un usuario con datos válidos
 - ✅ Que se pueda crear tanto administradores como usuarios normales
+- ✅ Que se usen helpers para generar datos de prueba
 - ❌ Que no permita emails duplicados
 - ❌ Que exija todos los campos obligatorios
 - ❌ Que valide el formato del email
 
-**Total:** 6 escenarios de prueba
+**Total:** 7 escenarios de prueba
 
 ### 📝 buscar-usuario.feature
 
@@ -417,36 +418,12 @@ Empieza por el más simple:
 
 ## 📊 Estadísticas del proyecto
 
-- **Total de pruebas:** 32 escenarios
+- **Total de pruebas:** 33 escenarios
 - **Endpoints cubiertos:** 5 (GET, POST, PUT, DELETE)
-- **Casos positivos:** 20 (62.5%)
-- **Casos negativos:** 12 (37.5%)
+- **Casos positivos:** 21 (63.6%)
+- **Casos negativos:** 12 (36.4%)
 - **Validación de esquemas JSON:** ✅ 100%
-- **Helpers reutilizables:** 2
-
----
-
-## 🤝 Contribuir
-
-¿Quieres agregar más pruebas o mejorar las existentes?
-
-1. Haz un fork del proyecto
-2. Crea una rama para tu feature: `git checkout -b feature/nueva-prueba`
-3. Haz tus cambios y commit: `git commit -m "Agregar prueba de X"`
-4. Push a tu rama: `git push origin feature/nueva-prueba`
-5. Abre un Pull Request
-
----
-
-## 📞 ¿Necesitas ayuda?
-
-Si tienes problemas o preguntas:
-
-1. Revisa la sección "Problemas comunes" arriba
-2. Mira el archivo `VERIFICACION_CUMPLIMIENTO.md` para detalles técnicos
-3. Abre un issue en GitHub con tu pregunta
-
----
+- **Helpers reutilizables:** 2 (activos y en uso)
 
 ## ✅ Checklist rápido
 
@@ -458,6 +435,23 @@ Antes de entregar o presentar, verifica:
 - [ ] El código está subido a GitHub
 - [ ] Este README está actualizado
 
+---
 
+## 📞 ¿Necesitas ayuda?
 
+Si tienes problemas o preguntas:
+
+1. Revisa la sección "Problemas comunes" arriba
+2. Consulta el archivo `ESTRATEGIA_AUTOMATIZACION.md` para detalles técnicos
+3. Abre un issue en GitHub con tu pregunta
+
+---
+
+## 🎉 ¡Listo para empezar!
+
+Ahora que tienes todo claro, ejecuta tu primera prueba:
+
+```bash
+mvn clean test
+```
 

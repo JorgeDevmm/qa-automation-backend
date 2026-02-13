@@ -7,35 +7,22 @@ Feature: Listar usuarios del API ServeRest
     # Configuración base para todos los escenarios
     * url baseUrl
     * path '/usuarios'
+    # Cargar esquemas de validación desde el helper
+    * def esquemaLista = call read('helpers/schema-validators.feature@userListSchema')
+    * def esquemaUsuario = call read('helpers/schema-validators.feature@userSchema')
 
   @smoke @regression @positive
   Scenario: Listar todos los usuarios exitosamente con validación de esquema
     # Verifica que el endpoint retorna la lista completa de usuarios
-    # Valida el esquema JSON completo de la respuesta
-    # con la estructura esperada
+    # Valida el esquema JSON usando helper para mantener consistencia
     When method GET
     Then status 200
-    # Validar esquema JSON completo de la respuesta
-    And match response ==
-    """
-    {
-      usuarios: '#array',
-      quantidade: '#number'
-    }
-    """
+    # Validar esquema JSON usando el helper de validación
+    And match response == esquemaLista.userListSchema
     # Validar que la cantidad es un número positivo
     And assert response.quantidade >= 0
-    # Validar que cada usuario tiene la estructura correcta
-    And match each response.usuarios ==
-    """
-    {
-      _id: '#string',
-      nome: '#string',
-      email: '#string',
-      password: '#string',
-      administrador: '#string'
-    }
-    """
+    # Validar que cada usuario tiene la estructura correcta usando helper
+    And match each response.usuarios == esquemaUsuario.userSchema
     # Validar formato de email y valor de administrador
     And match each response.usuarios contains { email: '#regex .+@.+\\..+' }
     And match each response.usuarios contains { administrador: '#regex (true|false)' }
@@ -43,22 +30,13 @@ Feature: Listar usuarios del API ServeRest
   @smoke @positive
   Scenario: Validar estructura completa de cada usuario en la lista
     # Verifica que cada usuario en la lista tiene todos los campos requeridos
-    # con los tipos de datos correctos y formatos válidos
+    # Usa esquemas del helper para garantizar consistencia en las validaciones
     When method GET
     Then status 200
-    # Validar esquema principal
-    And match response == { usuarios: '#array', quantidade: '#number' }
-    # Validar estructura detallada de cada usuario
-    And match each response.usuarios ==
-    """
-    {
-      _id: '#string',
-      nome: '#string',
-      email: '#string',
-      password: '#string',
-      administrador: '#string'
-    }
-    """
+    # Validar esquema principal usando helper
+    And match response == esquemaLista.userListSchema
+    # Validar estructura detallada de cada usuario usando helper
+    And match each response.usuarios == esquemaUsuario.userSchema
     # Validar que todos los campos son not null
     And match each response.usuarios contains { _id: '#notnull' }
     And match each response.usuarios contains { nome: '#notnull' }

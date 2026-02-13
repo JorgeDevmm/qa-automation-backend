@@ -16,18 +16,14 @@ function fn() {
             'Accept': 'application/json'        // Indica que esperamos recibir JSON
         },
 
-        // Códigos de estado HTTP como variables reutilizables
-        assertions: {
-            statusOk: 200,           // Petición exitosa
-            statusCreated: 201,      // Recurso creado exitosamente
-            statusBadRequest: 400,   // Error en la petición
-            statusNotFound: 404      // Recurso no encontrado
-        },
 
         // Tiempo máximo de espera para las peticiones (en milisegundos)
         timeout: 10000  // 10 segundos
     };
 
+    // Configurar timeout globalmente para todas las peticiones HTTP
+    karate.configure('connectTimeout', config.timeout);
+    karate.configure('readTimeout', config.timeout);
 
     return config; // Retorna la configuración para ser usada en los features
 }

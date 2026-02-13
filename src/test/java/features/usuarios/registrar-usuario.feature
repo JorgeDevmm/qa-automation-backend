@@ -11,6 +11,8 @@ Feature: Registrar nuevo usuario en ServeRest
     * def timestamp = function(){ return java.lang.System.currentTimeMillis() }
     # Email único para cada ejecución
     * def randomEmail = 'usuario' + timestamp() + '@qa.com'
+    # Cargar helper de generación de datos de usuario
+    * def generadorUsuario = call read('helpers/user-data-generator.feature@Generar datos de usuario válido')
 
   @smoke @critical @positive
   Scenario: Registrar usuario válido exitosamente con validación de esquema
@@ -188,3 +190,28 @@ Feature: Registrar nuevo usuario en ServeRest
     # Limpiar
     Given path '/usuarios', userId
     When method DELETE
+
+  @positive
+  Scenario: Registrar usuario usando helper de generación de datos
+    # Este escenario demuestra el uso del helper para generar datos de prueba
+    # El helper proporciona un objeto userData con todos los campos necesarios
+
+    # Usar los datos generados por el helper (ya cargado en Background)
+    Given request generadorUsuario.userData
+    When method POST
+    Then status 201
+    And match response.message == 'Cadastro realizado com sucesso'
+    And match response._id == '#notnull'
+    * def usuarioId = response._id
+
+    # Verificar que el usuario se creó con los datos del helper
+    Given path '/usuarios', usuarioId
+    When method GET
+    Then status 200
+    And match response.nome == 'Usuario Test Auto'
+    And match response.administrador == 'true'
+
+    # Limpiar
+    Given path '/usuarios', usuarioId
+    When method DELETE
+
